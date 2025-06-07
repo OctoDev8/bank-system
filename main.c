@@ -7,6 +7,7 @@
 // #define MAX_USERNAME 20
 // #define MAX_PASSWORD 20 (Commenting out to see if these are necessary)
 
+//Note to self: Use arrow operator to access structs
  struct bankUser{
     char username [20];
     char password [20];
@@ -29,6 +30,11 @@ void createAccount(struct bankUser *user, char *username, char *password){
     printf("Account created for user %s\n", user->username);
 }
 
+void listAccounts (struct bankUser *user){
+    printf("Listed accounts:\n");
+    printf("%s\n", user->username);
+}
+
 int main(){
     struct bankUser user;
     int choice;
@@ -38,25 +44,31 @@ int main(){
     printf("\n\tBank System CLI Project\n");
     printf("Choose your options by inputting a number\n");
     printf("1. Create an account\n");
-    printf("2. Close an account\n");
-    printf("3. Deposit money to an account\n");
-    printf("4. Withdraw money from an account\n");
-    printf("5. Exit\n");
+    printf("2. List accounts\n");
+    printf("3. Close an account\n");
+    printf("4. Deposit money to an account\n");
+    printf("5. Withdraw money from an account\n");
+    printf("6. Exit\n");
         printf("Enter your choice here:");
         scanf("%d", &choice);
 
         switch (choice){
             case 1:
             system("cls");
-            printf("Create a username");
+            printf("Create a username: ");
             scanf("%s", user.username);
-            printf("Create a password");
+            printf("Create a password: ");
             scanf("%s", user.password);
 
             createAccount(&user, user.username,user.password);
             break;
 
-            case 5:
+            case 2:
+            system("cls");
+            listAccounts(&user);
+            break;
+
+            case 6:
             running = 0;
             break;
 
