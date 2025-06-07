@@ -1,42 +1,71 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <conio.h>
 #include <string.h>
 
-// #define MAX_USER 10
-// #define MAX_USERNAME 20
-// #define MAX_PASSWORD 20 (Commenting out to see if these are necessary)
+#define MAX_USERS 20
+#define MAX_USERNAME_LEN 20
+#define MAX_PASS_LEN 20
 
 //Note to self: Use arrow operator to access structs
  struct bankUser{
-    char username [20];
-    char password [20];
-    float balance;
+    char username[MAX_USERNAME_LEN];
+    char password[MAX_PASS_LEN];
+    double balance;
 };
 
+struct bankUser *users = NULL;
+int userCount = 0;
 
-int length = 0;
-
-void takeInput(char ch[50]){
-    fgets(ch,50, stdin);
-    ch[strlen(ch) - 1] = 0;
+void takeInput(char *ch, int size){
+    fgets(ch, size, stdin);
+    ch[strcspn(ch,"\n")] = 0;
 }
 
-void createAccount(struct bankUser *user, char *username, char *password){
-    strcpy(user->username, username);
-    strcpy(user->password, password);
-    user->balance = 0;
+struct bankUser* createAccount(struct bankUser *users, int *userCount){
+    char username[MAX_USERNAME_LEN];
+    char password[MAX_PASS_LEN];
+    
+    printf("Enter username: ");
+    takeInput(username, MAX_USERNAME_LEN);
+    printf("Enter password: ");
+    takeInput(password, MAX_PASS_LEN);
 
-    printf("Account created for user %s\n", user->username);
+    users = realloc(users, (*userCount + 1)* sizeof(struct bankUser));
+
+    strcpy(users[*userCount].username, username);
+    strcpy(users[*userCount].password, password);
+    users[*userCount].balance = 0.0;
+
+    printf("Account created for %s.\n", users[*userCount].username);
+    (*userCount)++;
+
+    return users;
 }
 
-void listAccounts (struct bankUser *user){
-    printf("Listed accounts:\n");
-    printf("%s\n", user->username);
+void listAccounts (struct bankUser *users, int userCount){
+    for(int i = 0; i < userCount; i++){
+        printf("%d. %s\n", i+1, users[i].username);
+    }
+}
+
+struct bankUser* closeAccounts (struct bankUser *users, int *userCount){
+    int indexToRemove;
+
+    printf("Enter account number to remove:\n");
+    scanf("%d", &indexToRemove);
+    indexToRemove--;
+
+    for(int i = indexToRemove; i < *userCount - 1; i++){
+        users[i] = users[i + 1];
+    }
+    (*userCount)--;
+    users = realloc(users,(*userCount)* sizeof(struct bankUser));
+    printf("Successfully closed account!");
+
+    return users;
 }
 
 int main(){
-    struct bankUser user;
     int choice;
     int running = 1;
 
@@ -51,21 +80,23 @@ int main(){
     printf("6. Exit\n");
         printf("Enter your choice here:");
         scanf("%d", &choice);
+        getchar();
+
 
         switch (choice){
             case 1:
             system("cls");
-            printf("Create a username: ");
-            scanf("%s", user.username);
-            printf("Create a password: ");
-            scanf("%s", user.password);
-
-            createAccount(&user, user.username,user.password);
+            users = createAccount(users, &userCount);
             break;
 
             case 2:
             system("cls");
-            listAccounts(&user);
+            listAccounts(users, userCount);
+            break;
+
+            case 3:
+            system("cls");
+            users = closeAccounts(users, &userCount);
             break;
 
             case 6:
@@ -77,5 +108,6 @@ int main(){
             break;
         }
     }
+    free(users);
     return 0;
 }
