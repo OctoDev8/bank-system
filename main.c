@@ -6,6 +6,8 @@
 #define MAX_USERNAME_LEN 20
 #define MAX_PASS_LEN 20
 
+//TODO: Refine prints to terminal
+
 //Note to self: Use arrow operator to access structs
  struct bankUser{
     char username[MAX_USERNAME_LEN];
@@ -45,6 +47,11 @@ struct bankUser* createAccount(struct bankUser *users, int *userCount){
 void listAccounts (struct bankUser *users, int userCount){
     for(int i = 0; i < userCount; i++){
         printf("%d. %s\n", i+1, users[i].username);
+        if(users[i].balance == 0){
+            printf("No balance.");
+        } else {
+            printf("%d. %s\n", i+1, users[i].balance);
+        }
     }
 }
 
@@ -61,6 +68,32 @@ struct bankUser* closeAccounts (struct bankUser *users, int *userCount){
     (*userCount)--;
     users = realloc(users,(*userCount)* sizeof(struct bankUser));
     printf("Successfully closed account!");
+
+    return users;
+}
+
+struct bankUser* depositMoney(struct bankUser *users, int *userCount){
+    double moneyAmount;
+
+    printf("Enter amount you want to deposit.");
+    scanf("%d", &moneyAmount);
+
+    users[*userCount].balance += moneyAmount;
+    
+    return users;
+}
+
+struct bankUser* withdrawMoney(struct bankUser *users, int *userCount){
+    double moneyAmount;
+
+    printf("Enter amount you want to withdraw");
+    scanf("%d", &moneyAmount);
+
+      if(moneyAmount > users[*userCount].balance){
+        printf("Invalid amount, you can only withdraw what you have.");
+    } else {
+        users[*userCount].balance -= moneyAmount;
+    }
 
     return users;
 }
@@ -99,6 +132,16 @@ int main(){
             users = closeAccounts(users, &userCount);
             break;
 
+            case 4:
+            system("cls");
+            users = depositMoney(users, &userCount);
+            break;
+
+            case 5:
+            system("cls");
+            users = withdrawMoney(users, &userCount);
+            break;
+            
             case 6:
             running = 0;
             break;
