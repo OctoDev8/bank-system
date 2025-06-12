@@ -5,10 +5,6 @@
 #define MAX_USERS 20
 #define MAX_USERNAME_LEN 20
 #define MAX_PASS_LEN 20
-
-//TODO: Refine prints to terminal. Make sign-in and log-out function. Make withdrawal and depositing money work.
-
-//Note to self: Use arrow operator to access structs
  struct bankUser{
     char username[MAX_USERNAME_LEN];
     char password[MAX_PASS_LEN];
